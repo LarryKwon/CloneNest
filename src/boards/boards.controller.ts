@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UsePipes,
@@ -40,7 +41,7 @@ export class BoardsController {
   }
 
   @Delete('/:id')
-  deleteBoard(@Param('id') id: number): Promise<UpdateResult> {
+  deleteBoard(@Param('id', ParseIntPipe) id: number): Promise<UpdateResult> {
     return this.boardService.deleteBoard(id);
   }
 
@@ -48,7 +49,7 @@ export class BoardsController {
   updateBoard(
     @Param('id') id: number,
     @Body('status', BoardStatusValidationPipe) status: BoardStatus,
-  ): Promise<UpdateResult> {
+  ): Promise<Board> {
     return this.boardService.updateBoardStatus(id, status);
   }
 }

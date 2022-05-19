@@ -63,8 +63,13 @@ export class BoardsService {
   // }
 
   async deleteBoard(id: number): Promise<UpdateResult> {
-    const found = this.getBoardById(id);
-    return await this.boardRepository.softDelete(id);
+    // const found = this.getBoardById(id);
+    const result = await this.boardRepository.softDelete(id);
+    console.log(result);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Can't find Board with id: ${id}`);
+    }
+    return result;
   }
   // updateBoardStatus(id: string, status: BoardStatus): Board {
   //   const board = this.getBoardById(id);
@@ -72,11 +77,11 @@ export class BoardsService {
   //   return board;
   // }
 
-  async updateBoardStatus(
-    id: number,
-    status: BoardStatus,
-  ): Promise<UpdateResult> {
+  async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
     const found = await this.getBoardById(id);
-    return await this.boardRepository.update(id, { status: status });
+    found.status = status;
+    await this.boardRepository.save(found);
+    return found;
+    // return await this.boardRepository.update(id, { status: status });
   }
 }
